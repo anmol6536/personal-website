@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto" x-data="{ multiplier: 1, baseServings: {{ recipe.servings }} }">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h2 class="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white">{{ recipe.title }}</h2>
+        <p class="max-w-3xl mx-auto text-gray-600 dark:text-gray-400">{{ recipe.description }}</p>
+    </div>
+
+    <!-- Info Bar -->
+    <div class="flex flex-wrap justify-center gap-x-6 gap-y-4 text-center mb-8 bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg">
+        <div class="flex items-center">
+            <span class="material-icons text-neon-accent">timer</span>
+            <span class="ml-2">Prep: {{ recipe.prep_time }}</span>
+        </div>
+        <div class="flex items-center">
+            <span class="material-icons text-neon-accent">whatshot</span>
+            <span class="ml-2">Cook: {{ recipe.cook_time }}</span>
+        </div>
+        <div class="flex items-center">
+            <span class="material-icons text-neon-accent">pie_chart</span>
+            <span class="ml-2">Serves: <span x-text="(baseServings * multiplier).toFixed(1)"></span></span>
+        </div>
+        <div class="flex items-center">
+            <span class="material-icons text-neon-accent">local_fire_department</span>
+            <span class="ml-2">Calories: <span x-text="({{ recipe.calories_per_serving }} * multiplier).toFixed(0)">{{ recipe.calories_per_serving }}</span></span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="grid md:grid-cols-3 gap-8">
+        <!-- Left Column: Instructions -->
+        <div class="md:col-span-2 bg-gray-50 dark:bg-gray-800/50 p-8 rounded-lg">
+            <h3 class="text-3xl font-bold mb-6">Instructions</h3>
+            <ol class="list-decimal list-inside space-y-6 text-lg">
+                {% for instruction in recipe.instructions %}
+                <li class="pl-2 flex items-start" x-data="{ completed: false }">
+                    <input type="checkbox" x-model="completed" class="mr-3 mt-1.5 h-5 w-5 rounded border-gray-300 text-neon-accent focus:ring-neon-accent cursor-pointer">
+                    <span :class="{'line-through text-gray-500 dark:text-gray-400': completed}" class="transition-all">{{ instruction }}</span>
+                </li>
+                {% endfor %}
+            </ol>
+        </div>
+
+        <!-- Right Column: Image and Ingredients -->
+        <div class="md:col-span-1 space-y-8">
+            <img src="{{ recipe.image_url }}" alt="{{ recipe.title }}" class="w-full h-auto object-cover rounded-lg shadow-lg">
+            
+            <div class="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-lg">
+                <h3 class="text-3xl font-bold mb-4">Ingredients</h3>
+                
+                <!-- Scaler -->
+                <div class="mb-6">
+                    <label for="multiplier" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Scale Recipe:</label>
+                    <div class="flex space-x-2">
+                        <button @click="multiplier = 0.5" :class="{'bg-neon-accent text-white': multiplier === 0.5, 'bg-gray-200 dark:bg-gray-700': multiplier !== 0.5}" class="flex-1 px-3 py-1 rounded-md text-sm transition-colors">0.5x</button>
+                        <button @click="multiplier = 1" :class="{'bg-neon-accent text-white': multiplier === 1, 'bg-gray-200 dark:bg-gray-700': multiplier !== 1}" class="flex-1 px-3 py-1 rounded-md text-sm transition-colors">1x</button>
+                        <button @click="multiplier = 2" :class="{'bg-neon-accent text-white': multiplier === 2, 'bg-gray-200 dark:bg-gray-700': multiplier !== 2}" class="flex-1 px-3 py-1 rounded-md text-sm transition-colors">2x</button>
+                        <button @click="multiplier = 4" :class="{'bg-neon-accent text-white': multiplier === 4, 'bg-gray-200 dark:bg-gray-700': multiplier !== 4}" class="flex-1 px-3 py-1 rounded-md text-sm transition-colors">4x</button>
+                    </div>
+                </div>
+
+                <!-- Ingredient List -->
+                <ul class="space-y-2">
+                    {% for ingredient in recipe.ingredients %}
+                    <li class="flex justify-between items-center p-2 rounded-md even:bg-gray-100 dark:even:bg-gray-900/50">
+                        <span>{{ ingredient.name }}</span>
+                        <span class="font-mono text-right">
+                            <span x-text="(({{ ingredient.amount or 0 }}) * multiplier).toFixed(2).replace('.00', '')"></span>
+                            <span>{{ ingredient.unit }}</span>
+                        </span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

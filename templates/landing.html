@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="text-center">
+    <div class="relative max-w-4xl mx-auto">
+        <div class="absolute -top-40 -left-60 w-96 h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-2xl opacity-70 animate-blob dark:mix-blend-normal dark:opacity-30"></div>
+        <div class="absolute -top-40 -right-60 w-96 h-96 bg-yellow-300 rounded-full mix-blend-multiply filter blur-2xl opacity-70 animate-blob animation-delay-2000 dark:mix-blend-normal dark:opacity-30"></div>
+        <div class="absolute -bottom-40 left-1/4 w-96 h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-2xl opacity-70 animate-blob animation-delay-4000 dark:mix-blend-normal dark:opacity-30"></div>
+
+        <div class="relative z-10" x-data="{}" x-init="$el.classList.add('fade-in-up')">
+            <h1 class="text-5xl md:text-7xl font-bold font-mono tracking-tighter mb-4 text-gray-900 dark:text-white">
+                Scientist. Engineer. Photographer.
+            </h1>
+            <p class="max-w-2xl mx-auto text-lg text-gray-600 dark:text-gray-300 stagger-1">
+                I build scalable, data-centric ML platforms for biology and beyond. Off the clock, I capture moments through my lens and experiment in the kitchen.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="mt-24">
+    <div class="grid md:grid-cols-3 gap-8">
+        <a href="{{ url_for('timeline.timeline') }}" class="group block p-8 bg-gray-50 dark:bg-gray-800/50 rounded-lg shadow-sm hover:shadow-lg hover:scale-105 transform transition-all duration-300" x-animate-on-scroll>
+            <h3 class="text-2xl font-bold mb-2 text-gray-900 dark:text-white">Work ▸</h3>
+            <p class="text-gray-600 dark:text-gray-400">A timeline of my work building production ML models, high-throughput discovery platforms, and collaborative codebases.</p>
+        </a>
+        <a href="{{ url_for('gallery.index') }}" class="group block p-8 bg-gray-50 dark:bg-gray-800/50 rounded-lg shadow-sm hover:shadow-lg hover:scale-105 transform transition-all duration-300" x-animate-on-scroll.delay.200ms>
+            <h3 class="text-2xl font-bold mb-2 text-gray-900 dark:text-white">Photos ▸</h3>
+            <p class="text-gray-600 dark:text-gray-400">A curated collection of my favorite shots from city streets to mountain peaks.</p>
+        </a>
+        <a href="{{ url_for('food_blog.food_blog_index') }}" class="group block p-8 bg-gray-50 dark:bg-gray-800/50 rounded-lg shadow-sm hover:shadow-lg hover:scale-105 transform transition-all duration-300" x-animate-on-scroll.delay.400ms>
+            <h3 class="text-2xl font-bold mb-2 text-gray-900 dark:text-white">Food ▸</h3>
+            <p class="text-gray-600 dark:text-gray-400">Musings on cooking, recipes I love, and deep dives into the science of food.</p>
+        </a>
+    </div>
+</section>
+{% endblock %} 

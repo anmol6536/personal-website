@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto" x-data="{ isFilterOpen: false }">
+    <div class="text-center mb-8">
+        <h2 class="text-4xl font-bold text-gray-900 dark:text-white">Food Blog</h2>
+    </div>
+
+    <!-- Mobile Filter Button -->
+    <div class="md:hidden mb-4 text-center">
+        <button @click="isFilterOpen = true" class="inline-flex items-center px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg">
+            <span class="material-icons mr-2">filter_list</span>
+            Filters
+        </button>
+    </div>
+    
+    <div class="flex gap-8">
+        <!-- Sidebar -->
+        <aside 
+            class="md:w-1/4 lg:w-1/5 md:block fixed inset-0 bg-white dark:bg-gray-900 z-50 md:relative md:bg-transparent md:dark:bg-transparent transition-transform transform md:transform-none"
+            :class="{'translate-x-0': isFilterOpen, '-translate-x-full': !isFilterOpen}"
+        >
+            <div class="p-6 h-full overflow-y-auto">
+                <div class="flex justify-between items-center mb-6 md:hidden">
+                    <h3 class="text-2xl font-bold">Filters</h3>
+                    <button @click="isFilterOpen = false">
+                        <span class="material-icons">close</span>
+                    </button>
+                </div>
+
+                <!-- Search -->
+                <form action="{{ url_for('food_blog.food_blog_index') }}" method="get" class="mb-8">
+                    <div class="relative">
+                        <input type="search" name="search" value="{{ search or '' }}" placeholder="Search recipes..." class="w-full px-4 py-2 rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-neon-accent focus:border-neon-accent">
+                        <button type="submit" class="absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <span class="material-icons">search</span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Filters -->
+                <form 
+                    action="{{ url_for('food_blog.food_blog_index') }}" 
+                    method="get"
+                    hx-get="{{ url_for('food_blog.food_blog_index') }}"
+                    hx-target="#recipe-grid"
+                    hx-trigger="change"
+                    hx-swap="outerHTML"
+                >
+                    <input type="hidden" name="search" value="{{ search or '' }}">
+                    
+                    <h4 class="font-bold text-lg mt-6 mb-2">Categories</h4>
+                    <ul class="space-y-2">
+                        {% for category in categories %}
+                            <li>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" name="category" value="{{ category }}" class="rounded"
+                                           {% if category in selected_categories %}checked{% endif %}>
+                                    <span>{{ category }}</span>
+                                </label>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                    <h4 class="font-bold text-lg mt-6 mb-2">Cuisines</h4>
+                    <ul class="space-y-2">
+                        {% for cuisine in cuisines %}
+                            <li>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" name="cuisine" value="{{ cuisine }}" class="rounded"
+                                           {% if cuisine in selected_cuisines %}checked{% endif %}>
+                                    <span>{{ cuisine }}</span>
+                                </label>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <div class="mt-8">
+                        <a href="{{ url_for('food_blog.food_blog_index') }}" class="w-full text-center block mt-2 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:underline">Clear All Filters</a>
+                    </div>
+                </form>
+            </div>
+        </aside>
+
+        <!-- Recipe Grid -->
+        <main class="w-full">
+            {% include 'recipes/partials/recipe_grid.html' %}
+        </main>
+    </div>
+</div>
+{% endblock %} 

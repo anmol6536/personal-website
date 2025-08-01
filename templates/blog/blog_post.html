@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto flex flex-col md:flex-row gap-12">
+    
+    <!-- Post Content -->
+    <div class="w-full md:w-3/4">
+        <article class="prose lg:prose-xl dark:prose-invert max-w-none">
+            <h1 class="text-4xl font-bold mb-4">{{ post.title }}</h1>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-8">{{ post.date }} by {{ post.author }}</p>
+            {{ post.content|safe }}
+        </article>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="w-full md:w-1/4">
+        <div class="sticky top-24">
+            <!-- Author Box -->
+            <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-8">
+                <h4 class="font-bold text-lg mb-2 text-gray-900 dark:text-white">About the Author</h4>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    Anmol is a developer, photographer, and food enthusiast. This is where he shares his learnings and explorations in technology.
+                </p>
+            </div>
+
+            <!-- Related Posts -->
+            {% if related_posts %}
+            <div class="p-4 rounded-lg bg-gray-100 dark:bg-gray-800">
+                <h4 class="font-bold text-lg mb-4 text-gray-900 dark:text-white">Related Posts</h4>
+                <ul class="space-y-3">
+                    {% for related in related_posts %}
+                    <li>
+                        <a href="{{ url_for('dev_blog.dev_blog_post', slug=related.slug) }}" class="text-neon-accent hover:underline">
+                            {{ related.title }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </aside>
+
+</div>
+{% endblock %} 

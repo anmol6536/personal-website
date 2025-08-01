@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{ 'isDarkMode': false, 'isModalOpen': false, 'isMenuOpen': false }" x-init="isDarkMode = JSON.parse(localStorage.getItem('isDarkMode') || 'false'); $watch('isDarkMode', val => localStorage.setItem('isDarkMode', JSON.stringify(val)))" :class="{ 'dark': isDarkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anmol G - Dev & Photographer</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            animation: {
+                blob: 'blob 15s infinite',
+            },
+            keyframes: {
+                blob: {
+                    '0%': { transform: 'translate(0px, 0px) scale(1) rotate(0deg)' },
+                    '33%': { transform: 'translate(80px, -150px) scale(1.2) rotate(120deg)' },
+                    '66%': { transform: 'translate(-100px, 100px) scale(0.8) rotate(240deg)' },
+                    '100%': { transform: 'translate(0px, 0px) scale(1) rotate(360deg)' },
+                }
+            },
+            fontFamily: {
+              sans: ['Space Grotesk', 'sans-serif'],
+              mono: ['"Space Grotesk"', 'monospace'],
+            },
+            colors: {
+              'neon-accent': 'hsl(198 93% 60%)',
+            }
+          }
+        }
+      }
+    </script>
+    
+    <!-- HTMX & Alpine -->
+    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.directive('animate-on-scroll', (el) => {
+                let observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            el.classList.add('fade-in-up');
+                            observer.unobserve(el);
+                        }
+                    });
+                });
+                observer.observe(el);
+            });
+        });
+    </script>
+    <style>
+        .htmx-indicator{ display:none; }
+        .htmx-request .htmx-indicator{ display:inline; }
+        .htmx-request.htmx-indicator{ display:inline; }
+    </style>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans transition-colors duration-300">
+    <div id="progress-bar" class="htmx-indicator fixed top-0 left-0 w-full h-1 bg-neon-accent"></div>
+
+    <!-- Reworked Modal controlled by Alpine.js -->
+    <div 
+        x-show="isModalOpen" 
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        @keydown.escape.window="isModalOpen = false"
+        class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+        style="display: none;"
+    >
+        <div @click.away="isModalOpen = false" class="bg-white dark:bg-gray-900 rounded-lg shadow-2xl max-w-3xl w-full">
+            <div id="modal-content" hx-trigger="load" @htmx:after-swap="isModalOpen = true"></div>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4">
+        <header class="flex justify-between items-center py-6 relative z-20">
+            <a href="{{ url_for('main.landing') }}" class="text-2xl font-bold font-mono text-gray-900 dark:text-white">AG/</a>
+            
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="{{ url_for('main.landing') }}" class="text-gray-600 dark:text-gray-300 hover:text-neon-accent dark:hover:text-neon-accent transition-colors">Home</a>
+                <a href="{{ url_for('timeline.timeline') }}" class="text-gray-600 dark:text-gray-300 hover:text-neon-accent dark:hover:text-neon-accent transition-colors">Timeline</a>
+                <a href="{{ url_for('work.work_page') }}" class="text-gray-600 dark:text-gray-300 hover:text-neon-accent dark:hover:text-neon-accent transition-colors">Work</a>
+                <a href="{{ url_for('gallery.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-neon-accent dark:hover:text-neon-accent transition-colors">Gallery</a>
+                <a href="{{ url_for('dev_blog.dev_blog_index') }}" class="text-gray-600 dark:text-gray-300 hover:text-neon-accent dark:hover:text-neon-accent transition-colors">Dev Blog</a>
+                <a href="{{ url_for('food_blog.food_blog_index') }}" class="text-gray-600 dark:text-gray-300 hover:text-neon-accent dark:hover:text-neon-accent transition-colors">Food Blog</a>
+            </nav>
+
+            <div class="flex items-center space-x-4">
+                <button @click="isDarkMode = !isDarkMode" class="focus:outline-none">
+                    <svg x-show="!isDarkMode" class="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    <svg x-show="isDarkMode" class="w-6 h-6 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                </button>
+                
+                <!-- Mobile Menu Button -->
+                <button @click="isMenuOpen = !isMenuOpen" class="md:hidden focus:outline-none">
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path :class="{'hidden': isMenuOpen, 'inline-flex': !isMenuOpen }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        <path :class="{'hidden': !isMenuOpen, 'inline-flex': isMenuOpen }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Mobile Nav -->
+        <div x-show="isMenuOpen" @click.away="isMenuOpen = false" class="md:hidden">
+            <nav class="flex flex-col space-y-4 py-4">
+                <a href="{{ url_for('main.landing') }}" class="text-gray-600 dark:text-gray-300 hover:text-neon-accent dark:hover:text-neon-accent transition-colors">Home</a>
+                <a href="{{ url_for('timeline.timeline') }}" class="text-gray-600 dark:text-gray-300 hover:text-neon-accent dark:hover:text-neon-accent transition-colors">Timeline</a>
+                <a href="{{ url_for('work.work_page') }}" class="text-gray-600 dark:text-gray-300 hover:text-neon-accent dark:hover:text-neon-accent transition-colors">Work</a>
+                <a href="{{ url_for('gallery.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-neon-accent dark:hover:text-neon-accent transition-colors">Gallery</a>
+                <a href="{{ url_for('dev_blog.dev_blog_index') }}" class="text-gray-600 dark:text-gray-300 hover:text-neon-accent dark:hover:text-neon-accent transition-colors">Dev Blog</a>
+                <a href="{{ url_for('food_blog.food_blog_index') }}" class="text-gray-600 dark:text-gray-300 hover:text-neon-accent dark:hover:text-neon-accent transition-colors">Food Blog</a>
+            </nav>
+        </div>
+
+        <main class="py-10">
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="text-center py-8 text-gray-500 dark:text-gray-400 text-sm">
+            <p>&copy; 2024 Anmol Gorakshakar. Built with Flask, Tailwind, and HTMX.</p>
+            <a href="{{ url_for('admin.dashboard') }}" class="hover:underline">Admin</a>
+        </footer>
+    </div>
+
+</body>
+</html> 

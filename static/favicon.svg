@@ -1,0 +1,16 @@
+<svg width="100" height="100" viewBox="15 20 70 60" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .text {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 50px;
+      font-weight: bold;
+      fill: black;
+    }
+    @media (prefers-color-scheme: dark) {
+      .text {
+        fill: white;
+      }
+    }
+  </style>
+  <text x="50" y="53" dominant-baseline="middle" text-anchor="middle" class="text">AG</text>
+</svg> 

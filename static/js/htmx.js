@@ -1,0 +1,1 @@
+// This file is a placeholder. HTMX is loaded via CDN in base.html. 

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <h2 class="text-4xl font-bold text-center mb-12 text-gray-900 dark:text-white">Gallery</h2>
+    
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {% for photo in photos %}
+        <a href="#" 
+           hx-get="{{ url_for('gallery.gallery_modal', image_id=photo.id) }}"
+           hx-target="#modal-content"
+           @click.prevent="isModalOpen = true"
+           class="group relative block w-full aspect-square overflow-hidden">
+            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out filter grayscale group-hover:grayscale-0" 
+                 src="{{ url_for('gallery.get_thumbnail', image_id=photo.id) }}" 
+                 alt="{{ photo.caption }}"
+                 loading="lazy">
+            <div class="absolute inset-0 bg-black/20 group-hover:opacity-0 transition-opacity duration-300"></div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

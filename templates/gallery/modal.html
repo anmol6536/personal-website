@@ -1,0 +1,187 @@
+<!-- Instagram-style modal with dark background and metadata -->
+<div class="fixed inset-0 bg-black/95 flex items-center justify-center z-50">
+    <!-- Close button - top right -->
+    <button @click="isModalOpen = false" 
+            class="absolute top-4 right-4 md:top-6 md:right-6 z-20 text-white/80 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10">
+        <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+    </button>
+    
+    <!-- Desktop Layout -->
+    <div class="hidden md:flex w-full h-full items-center justify-center p-6 max-w-7xl mx-auto">
+        <!-- Image container - takes most of the space -->
+        <div class="flex-1 flex items-center justify-center pr-6">
+            <img src="{{ url_for('gallery.get_image', image_id=photo.id) }}" 
+                 alt="{{ photo.caption }}" 
+                 class="max-w-full max-h-full w-auto h-auto object-contain shadow-2xl"
+                 style="max-height: calc(100vh - 3rem);">
+        </div>
+        
+        <!-- Metadata sidebar -->
+        <div class="w-80 h-full flex flex-col bg-black/40 backdrop-blur-sm rounded-lg border border-white/10 overflow-hidden">
+            <!-- Header -->
+            <div class="p-6 border-b border-white/10">
+                <h3 class="text-white text-xl font-semibold">Image Details</h3>
+            </div>
+            
+            <!-- Scrollable content -->
+            <div class="flex-1 overflow-y-auto p-6 space-y-6">
+                <!-- Caption -->
+                {% if photo.caption %}
+                <div>
+                    <h4 class="text-white/60 text-sm font-medium uppercase tracking-wide mb-2">Caption</h4>
+                    <p class="text-white text-base leading-relaxed">{{ photo.caption }}</p>
+                </div>
+                {% endif %}
+                
+                <!-- Tags -->
+                {% if photo.tags %}
+                <div>
+                    <h4 class="text-white/60 text-sm font-medium uppercase tracking-wide mb-3">Tags</h4>
+                    <div class="flex flex-wrap gap-2">
+                        {% for tag in photo.tags %}
+                        <span class="px-3 py-1 bg-white/20 text-white text-sm rounded-full backdrop-blur-sm">
+                            #{{ tag }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Location -->
+                {% if photo.location %}
+                <div>
+                    <h4 class="text-white/60 text-sm font-medium uppercase tracking-wide mb-2">Location</h4>
+                    <div class="space-y-2">
+                        <p class="text-white text-sm font-mono">
+                            {{ "%.6f"|format(photo.location[0]) }}, {{ "%.6f"|format(photo.location[1]) }}
+                        </p>
+                        <a href="https://maps.google.com/?q={{ photo.location[0] }},{{ photo.location[1] }}" 
+                           target="_blank"
+                           class="inline-flex items-center text-blue-400 hover:text-blue-300 text-sm transition-colors">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            View on Maps
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Image Info -->
+                <div>
+                    <h4 class="text-white/60 text-sm font-medium uppercase tracking-wide mb-2">Image Info</h4>
+                    <div class="space-y-1 text-white/80 text-sm">
+                        <p>ID: <span class="font-mono text-xs">{{ photo.unique_id }}</span></p>
+                        <p>Format: {{ photo.mimetype }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer actions -->
+            <div class="p-4 border-t border-white/10">
+                <a href="{{ url_for('gallery.serve_image', unique_id=photo.unique_id) }}" 
+                   download
+                   class="w-full flex items-center justify-center px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg transition-colors">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Download
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mobile Layout -->
+    <div class="md:hidden w-full h-full flex flex-col">
+        <!-- Image area - takes most of the screen -->
+        <div class="flex-1 flex items-center justify-center p-4 min-h-0">
+            <img src="{{ url_for('gallery.get_image', image_id=photo.id) }}" 
+                 alt="{{ photo.caption }}" 
+                 class="max-w-full max-h-full w-auto h-auto object-contain"
+                 style="max-height: calc(100vh - 12rem);">
+        </div>
+        
+        <!-- Mobile metadata panel - bottom sheet style -->
+        <div class="bg-black/90 backdrop-blur-md border-t border-white/20 overflow-hidden">
+            <!-- Handle for visual indication -->
+            <div class="flex justify-center py-2">
+                <div class="w-12 h-1 bg-white/30 rounded-full"></div>
+            </div>
+            
+            <!-- Scrollable content -->
+            <div class="max-h-80 overflow-y-auto px-4 pb-6">
+                <!-- Caption -->
+                {% if photo.caption %}
+                <div class="mb-4">
+                    <p class="text-white text-base leading-relaxed">{{ photo.caption }}</p>
+                </div>
+                {% endif %}
+                
+                <!-- Tags -->
+                {% if photo.tags %}
+                <div class="mb-4">
+                    <div class="flex flex-wrap gap-2">
+                        {% for tag in photo.tags %}
+                        <span class="px-3 py-1.5 bg-white/20 text-white text-sm rounded-full backdrop-blur-sm">
+                            #{{ tag }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Location and actions row -->
+                <div class="flex items-center justify-between mb-4">
+                    {% if photo.location %}
+                    <a href="https://maps.google.com/?q={{ photo.location[0] }},{{ photo.location[1] }}" 
+                       target="_blank"
+                       class="flex items-center text-blue-400 text-sm bg-white/10 px-3 py-2 rounded-lg backdrop-blur-sm">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        Location
+                    </a>
+                    {% else %}
+                    <div></div>
+                    {% endif %}
+                    
+                    <!-- Download button -->
+                    <a href="{{ url_for('gallery.serve_image', unique_id=photo.unique_id) }}" 
+                       download
+                       class="flex items-center text-white text-sm bg-white/20 px-4 py-2 rounded-lg backdrop-blur-sm">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        Download
+                    </a>
+                </div>
+                
+                <!-- Image details (collapsible) -->
+                <details class="group">
+                    <summary class="flex items-center justify-between cursor-pointer text-white/60 text-sm font-medium uppercase tracking-wide py-2">
+                        Image Details
+                        <svg class="w-4 h-4 transform transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </summary>
+                    <div class="pt-2 space-y-1 text-white/80 text-sm">
+                        <p>ID: <span class="font-mono text-xs">{{ photo.unique_id }}</span></p>
+                        <p>Format: {{ photo.mimetype }}</p>
+                        {% if photo.location %}
+                        <p>Coordinates: <span class="font-mono text-xs">{{ "%.6f"|format(photo.location[0]) }}, {{ "%.6f"|format(photo.location[1]) }}</span></p>
+                        {% endif %}
+                    </div>
+                </details>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navigation hint (desktop only) -->
+    <div class="hidden md:block absolute bottom-6 left-6 text-white/60 text-sm">
+        Press <kbd class="px-2 py-1 bg-white/20 rounded text-xs">ESC</kbd> to close
+    </div>
+</div> 
