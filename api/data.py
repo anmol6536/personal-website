@@ -181,5 +181,43 @@ recipes = [
             "Remove the risotto from the heat. Stir in the remaining tablespoon of butter and the grated Parmesan cheese. Season with salt and pepper to taste.",
             "Serve immediately, garnished with fresh basil."
         ]
-    }
+    },
+    {
+    "slug": "spiced-indian-egg-curry",
+    "title": "Spiced Indian Egg Curry",
+    "description": "A hearty North-Indian style curry featuring hard-boiled eggs simmered in a fragrant onion-tomato gravy.",
+    # "image_url": "https://cookoverheels.com/wp-content/uploads/2020/04/Instant-Pot-Easy-Indian-Egg-Curry-Thumbnail.jpg",
+    "servings": 4,
+    "prep_time": "10 minutes",
+    "cook_time": "25 minutes",
+    "calories_per_serving": 320,
+    "category": "Main Course",
+    "cuisine": "Indian",
+    "ingredients": [
+        { "name": "Large Eggs",                            "amount": 6,    "unit": "unit" },
+        { "name": "Vegetable Oil",                         "amount": 2,    "unit": "tbsp" },
+        { "name": "Cumin Seeds",                           "amount": 1,    "unit": "tsp" },
+        { "name": "Yellow Onion",                          "amount": 1,    "unit": "unit" },
+        { "name": "Green Chili",                           "amount": 1,    "unit": "unit" },
+        { "name": "Ginger-Garlic Paste",                   "amount": 1,    "unit": "tbsp" },
+        { "name": "Tomatoes",                              "amount": 2,    "unit": "unit" },
+        { "name": "Turmeric Powder",                       "amount": 0.5,  "unit": "tsp" },
+        { "name": "Red Chili Powder",                      "amount": 1,    "unit": "tsp" },
+        { "name": "Coriander Powder",                      "amount": 1.5,  "unit": "tsp" },
+        { "name": "Garam Masala",                          "amount": 0.5,  "unit": "tsp" },
+        { "name": "Salt",                                  "amount": 1,    "unit": "to taste" },
+        { "name": "Water",                                 "amount": 250,  "unit": "ml" },
+        { "name": "Fresh Cilantro",                        "amount": 1,    "unit": "handful" }
+    ],
+    "instructions": [
+        "Heat the vegetable oil in a heavy pan over medium heat. Add cumin seeds and let them crackle for a few seconds until aromatic.",
+        "Stir in the chopped onion and green chili. Sauté until the onions turn golden-brown, about 5–6 minutes.",
+        "Add the ginger-garlic paste and cook for 1 minute, stirring, until the raw smell disappears.",
+        "Mix in the tomato purée along with turmeric, red chili, and coriander powders. Cook, stirring occasionally, until the oil separates and the masala darkens, 4–5 minutes.",
+        "Prick the boiled eggs lightly with a fork, then slide them into the masala. Gently coat the eggs for 1 minute to absorb flavours.",
+        "Pour in the warm water (or thin coconut milk). Season with salt. Simmer uncovered for 10 minutes, letting the gravy thicken.",
+        "Finish with garam masala and half the chopped cilantro. Stir once, taste, and adjust salt or chili.",
+        "Serve hot, garnished with remaining cilantro, alongside steamed basmati rice or warm roti."
+    ]
+}
 ] 

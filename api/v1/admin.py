@@ -1,15 +1,48 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from functools import wraps
 from core.data_layer.images import add_image, get_image_by_id, get_all_images, update_image_by_id, delete_image_by_id
 from core.utils import get_gps_from_exif, process_image_for_storage
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
+# Authentication decorator
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'admin_logged_in' not in session:
+            return redirect(url_for('admin.login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+@admin_bp.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        if username == 'admin' and password == 'AdminPass123':
+            session['admin_logged_in'] = True
+            flash('Login successful!', 'success')
+            return redirect(url_for('admin.dashboard'))
+        else:
+            flash('Invalid credentials. Please try again.', 'error')
+    
+    return render_template('admin/login.html')
+
+@admin_bp.route('/logout')
+def logout():
+    session.pop('admin_logged_in', None)
+    flash('You have been logged out.', 'success')
+    return redirect(url_for('admin.login'))
+
 @admin_bp.route('/')
+@login_required
 def dashboard():
     images = get_all_images()
     return render_template('admin/index.html', images=images)
 
 @admin_bp.route('/edit_image/<unique_id>')
+@login_required
 def edit_image_page(unique_id):
     image = get_image_by_id(unique_id)
     if image:
@@ -18,6 +51,7 @@ def edit_image_page(unique_id):
     return redirect(url_for('admin.dashboard'))
 
 @admin_bp.route('/delete_image/<unique_id>', methods=['POST'])
+@login_required
 def delete_image(unique_id):
     try:
         if delete_image_by_id(unique_id):
@@ -30,6 +64,7 @@ def delete_image(unique_id):
     return redirect(url_for('admin.dashboard'))
 
 @admin_bp.route('/update_image/<unique_id>', methods=['POST'])
+@login_required
 def update_image(unique_id):
     caption = request.form.get('caption')
     location_str = request.form.get('location')
@@ -64,6 +99,7 @@ def update_image(unique_id):
     return redirect(url_for('admin.edit_image_page', unique_id=unique_id))
 
 @admin_bp.route('/upload_image', methods=['POST'])
+@login_required
 def upload_image():
     if 'image' not in request.files:
         flash("No image file provided", "error")
