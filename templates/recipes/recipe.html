@@ -55,6 +55,7 @@
                     <label for="multiplier" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Scale Recipe:</label>
                     <div class="flex space-x-2">
                         <button @click="multiplier = 0.5" :class="{'bg-neon-accent text-white': multiplier === 0.5, 'bg-gray-200 dark:bg-gray-700': multiplier !== 0.5}" class="flex-1 px-3 py-1 rounded-md text-sm transition-colors">0.5x</button>
+                        <button @click="multiplier = 0.75" :class="{'bg-neon-accent text-white': multiplier === 0.75, 'bg-gray-200 dark:bg-gray-700': multiplier !== 0.75}" class="flex-1 px-3 py-1 rounded-md text-sm transition-colors">0.75x</button>
                         <button @click="multiplier = 1" :class="{'bg-neon-accent text-white': multiplier === 1, 'bg-gray-200 dark:bg-gray-700': multiplier !== 1}" class="flex-1 px-3 py-1 rounded-md text-sm transition-colors">1x</button>
                         <button @click="multiplier = 2" :class="{'bg-neon-accent text-white': multiplier === 2, 'bg-gray-200 dark:bg-gray-700': multiplier !== 2}" class="flex-1 px-3 py-1 rounded-md text-sm transition-colors">2x</button>
                         <button @click="multiplier = 4" :class="{'bg-neon-accent text-white': multiplier === 4, 'bg-gray-200 dark:bg-gray-700': multiplier !== 4}" class="flex-1 px-3 py-1 rounded-md text-sm transition-colors">4x</button>
@@ -62,17 +63,49 @@
                 </div>
 
                 <!-- Ingredient List -->
-                <ul class="space-y-2">
-                    {% for ingredient in recipe.ingredients %}
-                    <li class="flex justify-between items-center p-2 rounded-md even:bg-gray-100 dark:even:bg-gray-900/50">
-                        <span>{{ ingredient.name }}</span>
-                        <span class="font-mono text-right">
-                            <span x-text="(({{ ingredient.amount or 0 }}) * multiplier).toFixed(2).replace('.00', '')"></span>
-                            <span>{{ ingredient.unit }}</span>
+                <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-600 px-4 py-3 border-b border-gray-200 dark:border-gray-600">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                            </svg>
+                            <h4 class="font-semibold text-gray-800 dark:text-gray-200">Ingredients List</h4>
+                        </div>
+                    </div>
+                    <ul class="divide-y divide-gray-100 dark:divide-gray-700">
+                        {% for ingredient in recipe.ingredients %}
+                        <li class="grid grid-cols-[auto_1fr_auto_auto] gap-4 items-center px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                            <!-- Ingredient Icon -->
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 flex items-center justify-center">
+                                <svg class="w-4 h-4 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"/>
+                                </svg>
+                            </div>
+                            
+                            <!-- Ingredient Name -->
+                            <span class="text-gray-700 dark:text-gray-300 font-medium">{{ ingredient.name }}</span>
+                            
+                            <!-- Amount -->
+                            <div class="flex items-center gap-1">
+                                <span class="font-mono font-bold text-lg text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded min-w-[3rem] text-center" x-text="(({{ ingredient.amount or 0 }}) * multiplier).toFixed(2).replace('.00', '')"></span>
+                            </div>
+                            
+                            <!-- Unit -->
+                            <span class="font-medium text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide min-w-[3rem]">{{ ingredient.unit }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <!-- Footer with total count -->
+                    <div class="bg-gray-50 dark:bg-gray-700/50 px-4 py-2 text-center">
+                        <span class="text-sm text-gray-500 dark:text-gray-400">
+                            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            {{ recipe.ingredients|length }} ingredients total
                         </span>
-                    </li>
-                    {% endfor %}
-                </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
