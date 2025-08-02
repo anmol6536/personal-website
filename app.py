@@ -9,6 +9,7 @@ def create_app():
     
     # Set secret key for session management (required for flash messages)
     app.config['SECRET_KEY'] = 'your-secret-key-change-this-in-production'
+    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB upload limit
 
     # Register blueprints from the api.v1 package
     register_blueprints(app, 'api.v1')
